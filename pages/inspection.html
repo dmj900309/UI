@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>巡视执行 - 鱼塘巡视APP</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="../css/common.css">
+  <style>
+    .app-container {
+      padding-bottom: 60px;
+    }
+    
+    .tabs {
+      display: flex;
+      background-color: var(--white);
+      border-bottom: 1px solid var(--light-gray);
+      margin-bottom: 0;
+    }
+    
+    .tab {
+      flex: 1;
+      text-align: center;
+      padding: 12px 0;
+      font-weight: 500;
+      color: #666;
+    }
+    
+    .tab.active {
+      color: var(--primary-color);
+      border-bottom: 2px solid var(--primary-color);
+    }
+    
+    .route-card {
+      background-color: var(--white);
+      border-radius: 10px;
+      padding: 15px;
+      margin: 15px;
+      box-shadow: var(--box-shadow);
+      position: relative;
+    }
+    
+    .route-header {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 10px;
+    }
+    
+    .route-name {
+      font-weight: 600;
+      font-size: 18px;
+    }
+    
+    .route-date {
+      color: #666;
+      font-size: 14px;
+    }
+    
+    .route-ponds {
+      border-top: 1px solid var(--light-gray);
+      padding-top: 10px;
+    }
+    
+    .route-ponds-label {
+      font-size: 14px;
+      margin-bottom: 10px;
+      color: #666;
+    }
+    
+    .route-pond-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    
+    .route-pond-tag {
+      background-color: rgba(33, 150, 243, 0.1);
+      color: var(--primary-color);
+      padding: 5px 10px;
+      border-radius: 15px;
+      font-size: 12px;
+    }
+    
+    .route-actions {
+      display: flex;
+      margin-top: 15px;
+      gap: 10px;
+    }
+    
+    .route-button {
+      flex: 1;
+      padding: 10px;
+      border-radius: 8px;
+      font-weight: 500;
+      text-align: center;
+      border: none;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    
+    .route-button i {
+      margin-right: 5px;
+    }
+    
+    .route-button.primary {
+      background-color: var(--primary-color);
+      color: var(--white);
+    }
+    
+    .route-button.secondary {
+      background-color: #e0e0e0;
+      color: #333;
+    }
+    
+    .active-inspection {
+      padding: 15px;
+    }
+    
+    .step-indicator {
+      display: flex;
+      margin-bottom: 20px;
+      position: relative;
+    }
+    
+    .step {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      position: relative;
+      z-index: 1;
+    }
+    
+    .step-number {
+      width: 25px;
+      height: 25px;
+      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background-color: var(--light-gray);
+      font-size: 12px;
+      margin-bottom: 5px;
+    }
+    
+    .step.active .step-number {
+      background-color: var(--primary-color);
+      color: var(--white);
+    }
+    
+    .step.completed .step-number {
+      background-color: var(--success-color);
+      color: var(--white);
+    }
+    
+    .step-label {
+      font-size: 12px;
+      color: #666;
+    }
+    
+    .step.active .step-label {
+      color: var(--primary-color);
+      font-weight: 500;
+    }
+    
+    .step.completed .step-label {
+      color: var(--success-color);
+    }
+    
+    .step-line {
+      position: absolute;
+      top: 12px;
+      left: 12%;
+      right: 12%;
+      height: 2px;
+      background-color: var(--light-gray);
+      z-index: 0;
+    }
+    
+    .step-progress {
+      position: absolute;
+      top: 0;
+      left: 0;
+      height: 100%;
+      background-color: var(--success-color);
+      width: 33%;
+    }
+    
+    .pond-detail-card {
+      background-color: var(--white);
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: var(--box-shadow);
+      margin-bottom: 15px;
+    }
+    
+    .pond-detail-header {
+      background-color: var(--primary-color);
+      color: var(--white);
+      padding: 12px 15px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .pond-detail-id {
+      font-weight: 600;
+      font-size: 16px;
+    }
+    
+    .pond-location-mini {
+      font-size: 12px;
+      opacity: 0.8;
+    }
+    
+    .pond-detail-content {
+      padding: 15px;
+    }
+    
+    .pond-map {
+      height: 150px;
+      background-color: #e9e9e9;
+      border-radius: 8px;
+      margin-bottom: 15px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: #666;
+    }
+    
+    .sensor-container {
+      background-color: var(--white);
+      border-radius: 10px;
+      padding: 15px;
+      box-shadow: var(--box-shadow);
+      margin-top: 15px;
+    }
+    
+    .sensor-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 15px;
+    }
+    
+    .sensor-title {
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+    }
+    
+    .sensor-title i {
+      margin-right: 5px;
+      color: var(--primary-color);
+    }
+    
+    .bluetooth-status {
+      display: flex;
+      align-items: center;
+      font-size: 12px;
+      color: var(--success-color);
+    }
+    
+    .bluetooth-status i {
+      margin-right: 5px;
+    }
+    
+    .sensor-data {
+      display: flex;
+      justify-content: space-between;
+      text-align: center;
+    }
+    
+    .sensor-item {
+      flex: 1;
+      border-right: 1px solid var(--light-gray);
+      padding: 10px;
+    }
+    
+    .sensor-item:last-child {
+      border-right: none;
+    }
+    
+    .sensor-label {
+      font-size: 12px;
+      color: #666;
+      margin-bottom: 5px;
+    }
+    
+    .sensor-value {
+      font-size: 24px;
+      font-weight: 600;
+      margin-bottom: 5px;
+    }
+    
+    .sensor-unit {
+      font-size: 12px;
+      color: #666;
+    }
+    
+    .abnormal {
+      color: var(--error-color);
+    }
+    
+    .warning {
+      color: var(--warning-color);
+    }
+    
+    .sensor-status {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 12px;
+      margin-top: 5px;
+    }
+    
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      margin-right: 5px;
+    }
+    
+    .status-dot.normal {
+      background-color: var(--success-color);
+    }
+    
+    .status-dot.warning {
+      background-color: var(--warning-color);
+    }
+    
+    .status-dot.abnormal {
+      background-color: var(--error-color);
+    }
+    
+    .action-buttons {
+      display: flex;
+      gap: 10px;
+      margin-top: 20px;
+    }
+    
+    .action-buttons .button {
+      flex: 1;
+      margin: 0;
+    }
+    
+    .action-buttons .button-secondary {
+      background-color: #e0e0e0;
+      color: #333;
+    }
+    
+    .no-routes {
+      padding: 40px 20px;
+      text-align: center;
+    }
+    
+    .no-routes i {
+      font-size: 50px;
+      color: #ccc;
+      margin-bottom: 15px;
+    }
+    
+    .no-routes p {
+      color: #666;
+      margin-bottom: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div class="app-container">
+    <div class="header">
+      <button class="back-button" onclick="history.back()">
+        <i class="fas fa-arrow-left"></i>
+      </button>
+      <h1>巡视执行</h1>
+      <div style="width: 24px;"></div>
+    </div>
+    
+    <div class="tabs">
+      <div class="tab active" id="tab-routes">待执行</div>
+      <div class="tab" id="tab-active">进行中</div>
+      <div class="tab" id="tab-completed">已完成</div>
+    </div>
+    
+    <div id="routes-content">
+      <div class="route-card">
+        <div class="route-header">
+          <div class="route-name">东部鱼塘巡视</div>
+          <div class="route-date">今天 09:00</div>
+        </div>
+        <div class="route-ponds">
+          <div class="route-ponds-label">包含鱼塘：</div>
+          <div class="route-pond-list">
+            <div class="route-pond-tag">YT-BJ-0001</div>
+            <div class="route-pond-tag">YT-BJ-0003</div>
+            <div class="route-pond-tag">YT-BJ-0005</div>
+          </div>
+        </div>
+        <div class="route-actions">
+          <button class="route-button primary" onclick="showActiveInspection()">
+            <i class="fas fa-play"></i>
+            开始巡视
+          </button>
+          <button class="route-button secondary">
+            <i class="fas fa-info-circle"></i>
+            详情
+          </button>
+        </div>
+      </div>
+      
+      <div class="route-card">
+        <div class="route-header">
+          <div class="route-name">西区日常巡检</div>
+          <div class="route-date">明天 08:30</div>
+        </div>
+        <div class="route-ponds">
+          <div class="route-ponds-label">包含鱼塘：</div>
+          <div class="route-pond-list">
+            <div class="route-pond-tag">YT-BJ-0002</div>
+            <div class="route-pond-tag">YT-BJ-0004</div>
+          </div>
+        </div>
+        <div class="route-actions">
+          <button class="route-button primary" disabled style="background-color: #90caf9;">
+            <i class="fas fa-play"></i>
+            开始巡视
+          </button>
+          <button class="route-button secondary">
+            <i class="fas fa-info-circle"></i>
+            详情
+          </button>
+        </div>
+      </div>
+    </div>
+    
+    <div id="active-content" style="display: none;">
+      <div class="active-inspection">
+        <div class="step-indicator">
+          <div class="step-line">
+            <div class="step-progress"></div>
+          </div>
+          <div class="step completed">
+            <div class="step-number">
+              <i class="fas fa-check"></i>
+            </div>
+            <div class="step-label">打卡</div>
+          </div>
+          <div class="step active">
+            <div class="step-number">2</div>
+            <div class="step-label">采集数据</div>
+          </div>
+          <div class="step">
+            <div class="step-number">3</div>
+            <div class="step-label">提交</div>
+          </div>
+        </div>
+        
+        <div class="pond-detail-card">
+          <div class="pond-detail-header">
+            <div>
+              <div class="pond-detail-id">YT-BJ-0001</div>
+              <div class="pond-location-mini">北京朝阳区</div>
+            </div>
+            <div>1/3</div>
+          </div>
+          <div class="pond-detail-content">
+            <div class="pond-map">
+              <i class="fas fa-map-marker-alt"></i>
+              鱼塘位置
+            </div>
+            
+            <div class="sensor-container">
+              <div class="sensor-header">
+                <div class="sensor-title">
+                  <i class="fas fa-microchip"></i>
+                  传感器数据
+                </div>
+                <div class="bluetooth-status">
+                  <i class="fab fa-bluetooth-b"></i>
+                  已连接
+                </div>
+              </div>
+              
+              <div class="sensor-data">
+                <div class="sensor-item">
+                  <div class="sensor-label">氧含量</div>
+                  <div class="sensor-value abnormal">4.8</div>
+                  <div class="sensor-unit">mg/L</div>
+                  <div class="sensor-status">
+                    <div class="status-dot abnormal"></div>
+                    <span class="abnormal">偏低</span>
+                  </div>
+                </div>
+                <div class="sensor-item">
+                  <div class="sensor-label">温度</div>
+                  <div class="sensor-value">22.5</div>
+                  <div class="sensor-unit">°C</div>
+                  <div class="sensor-status">
+                    <div class="status-dot normal"></div>
+                    <span>正常</span>
+                  </div>
+                </div>
+                <div class="sensor-item">
+                  <div class="sensor-label">pH值</div>
+                  <div class="sensor-value warning">8.3</div>
+                  <div class="sensor-unit">pH</div>
+                  <div class="sensor-status">
+                    <div class="status-dot warning"></div>
+                    <span class="warning">偏高</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <div class="form-group" style="margin-top: 15px;">
+              <label class="form-label" for="abnormal-note">异常情况记录</label>
+              <textarea id="abnormal-note" class="form-input" rows="3" placeholder="请记录异常情况及处理措施"></textarea>
+            </div>
+            
+            <div class="action-buttons">
+              <button class="button button-secondary">
+                <i class="fas fa-redo"></i>
+                重新采集
+              </button>
+              <button class="button">
+                <i class="fas fa-check"></i>
+                确认提交
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div id="completed-content" style="display: none;">
+      <div class="no-routes">
+        <i class="fas fa-clipboard-check"></i>
+        <p>今日暂无已完成巡视</p>
+        <button class="button" style="max-width: 200px; margin: 0 auto;">查看历史记录</button>
+      </div>
+    </div>
+    
+    <div class="bottom-nav">
+      <a href="home.html" class="nav-item">
+        <i class="fas fa-home"></i>
+        <span>首页</span>
+      </a>
+      <a href="inspection.html" class="nav-item active">
+        <i class="fas fa-clipboard-check"></i>
+        <span>巡视</span>
+      </a>
+      <a href="records.html" class="nav-item">
+        <i class="fas fa-history"></i>
+        <span>记录</span>
+      </a>
+      <a href="profile.html" class="nav-item">
+        <i class="fas fa-user"></i>
+        <span>我的</span>
+      </a>
+    </div>
+  </div>
+  
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const tabs = document.querySelectorAll('.tab');
+      const routesContent = document.getElementById('routes-content');
+      const activeContent = document.getElementById('active-content');
+      const completedContent = document.getElementById('completed-content');
+      
+      tabs.forEach((tab, index) => {
+        tab.addEventListener('click', () => {
+          tabs.forEach(t => t.classList.remove('active'));
+          tab.classList.add('active');
+          
+          routesContent.style.display = 'none';
+          activeContent.style.display = 'none';
+          completedContent.style.display = 'none';
+          
+          if (index === 0) {
+            routesContent.style.display = 'block';
+          } else if (index === 1) {
+            activeContent.style.display = 'block';
+          } else {
+            completedContent.style.display = 'block';
+          }
+        });
+      });
+    });
+    
+    function showActiveInspection() {
+      const tabs = document.querySelectorAll('.tab');
+      const routesContent = document.getElementById('routes-content');
+      const activeContent = document.getElementById('active-content');
+      
+      tabs.forEach(t => t.classList.remove('active'));
+      document.getElementById('tab-active').classList.add('active');
+      
+      routesContent.style.display = 'none';
+      activeContent.style.display = 'block';
+    }
+  </script>
+</body>
+</html> 

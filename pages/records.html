@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>巡视记录 - 鱼塘巡视APP</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="../css/common.css">
+  <style>
+    .app-container {
+      padding-bottom: 60px;
+    }
+    
+    .search-section {
+      background-color: var(--primary-color);
+      padding: 15px;
+    }
+    
+    .search-bar {
+      display: flex;
+      align-items: center;
+      background-color: rgba(255, 255, 255, 0.2);
+      border-radius: 8px;
+      padding: 10px 15px;
+      margin-bottom: 15px;
+    }
+    
+    .search-bar i {
+      margin-right: 10px;
+      color: var(--white);
+    }
+    
+    .search-bar input {
+      flex: 1;
+      background: none;
+      border: none;
+      color: var(--white);
+      outline: none;
+    }
+    
+    .search-bar input::placeholder {
+      color: rgba(255, 255, 255, 0.7);
+    }
+    
+    .filter-options {
+      display: flex;
+      justify-content: space-between;
+    }
+    
+    .filter-button {
+      color: var(--white);
+      background-color: rgba(255, 255, 255, 0.2);
+      border: none;
+      border-radius: 20px;
+      padding: 5px 12px;
+      display: flex;
+      align-items: center;
+      font-size: 12px;
+    }
+    
+    .filter-button i {
+      margin-right: 5px;
+    }
+    
+    .records-section {
+      background-color: var(--white);
+      padding: 15px;
+    }
+    
+    .records-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 15px;
+    }
+    
+    .records-title {
+      font-weight: 600;
+    }
+    
+    .records-count {
+      color: #666;
+      font-size: 14px;
+    }
+    
+    .export-button {
+      display: flex;
+      align-items: center;
+      color: var(--primary-color);
+      background: none;
+      border: none;
+      font-size: 14px;
+    }
+    
+    .export-button i {
+      margin-right: 5px;
+    }
+    
+    .record-list {
+      margin-bottom: 20px;
+    }
+    
+    .record-date-header {
+      background-color: #f5f5f5;
+      padding: 8px 10px;
+      font-size: 14px;
+      font-weight: 500;
+      border-radius: 5px;
+      margin-bottom: 10px;
+    }
+    
+    .record-card {
+      background-color: var(--white);
+      border-radius: 8px;
+      border: 1px solid var(--light-gray);
+      margin-bottom: 10px;
+      overflow: hidden;
+    }
+    
+    .record-header {
+      display: flex;
+      justify-content: space-between;
+      padding: 10px 15px;
+      border-bottom: 1px solid #f5f5f5;
+    }
+    
+    .record-pond-id {
+      font-weight: 600;
+    }
+    
+    .record-time {
+      color: #666;
+      font-size: 14px;
+    }
+    
+    .record-content {
+      padding: 15px;
+    }
+    
+    .record-data {
+      display: flex;
+      justify-content: space-between;
+      text-align: center;
+      margin-bottom: 10px;
+    }
+    
+    .record-data-item {
+      flex: 1;
+    }
+    
+    .record-data-label {
+      font-size: 12px;
+      color: #666;
+      margin-bottom: 5px;
+    }
+    
+    .record-data-value {
+      font-size: 18px;
+      font-weight: 600;
+    }
+    
+    .record-data-value.normal {
+      color: var(--success-color);
+    }
+    
+    .record-data-value.warning {
+      color: var(--warning-color);
+    }
+    
+    .record-data-value.abnormal {
+      color: var(--error-color);
+    }
+    
+    .record-footer {
+      display: flex;
+      justify-content: space-between;
+      padding: 10px 15px;
+      background-color: #f9f9f9;
+      font-size: 13px;
+    }
+    
+    .record-operator {
+      display: flex;
+      align-items: center;
+    }
+    
+    .record-operator i {
+      margin-right: 5px;
+      color: #666;
+    }
+    
+    .record-actions {
+      display: flex;
+    }
+    
+    .record-action {
+      color: var(--primary-color);
+      margin-left: 15px;
+    }
+    
+    .filter-modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: rgba(0, 0, 0, 0.5);
+      display: none;
+      justify-content: center;
+      align-items: flex-end;
+      z-index: 1000;
+    }
+    
+    .filter-content {
+      background-color: var(--white);
+      width: 100%;
+      border-top-left-radius: 15px;
+      border-top-right-radius: 15px;
+      padding: 20px;
+    }
+    
+    .filter-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+    
+    .filter-title {
+      font-weight: 600;
+      font-size: 18px;
+    }
+    
+    .filter-close {
+      border: none;
+      background: none;
+      font-size: 20px;
+      color: #666;
+    }
+    
+    .filter-section {
+      margin-bottom: 20px;
+    }
+    
+    .filter-section-title {
+      font-weight: 500;
+      margin-bottom: 10px;
+    }
+    
+    .filter-date-range {
+      display: flex;
+      gap: 10px;
+    }
+    
+    .checkbox-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 15px;
+    }
+    
+    .checkbox-item {
+      display: flex;
+      align-items: center;
+    }
+    
+    .checkbox-item input {
+      margin-right: 5px;
+    }
+    
+    .filter-actions {
+      display: flex;
+      gap: 10px;
+    }
+    
+    .filter-actions button {
+      flex: 1;
+      padding: 12px;
+      border-radius: 8px;
+      font-weight: 500;
+      border: none;
+    }
+    
+    .filter-reset {
+      background-color: #f5f5f5;
+      color: #333;
+    }
+    
+    .filter-apply {
+      background-color: var(--primary-color);
+      color: var(--white);
+    }
+    
+    .empty-records {
+      text-align: center;
+      padding: 40px 20px;
+      color: #666;
+    }
+    
+    .empty-records i {
+      font-size: 60px;
+      color: #ddd;
+      margin-bottom: 15px;
+    }
+    
+    .empty-records p {
+      margin-bottom: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div class="app-container">
+    <div class="header">
+      <button class="back-button" onclick="history.back()">
+        <i class="fas fa-arrow-left"></i>
+      </button>
+      <h1>巡视记录</h1>
+      <div style="width: 24px;"></div>
+    </div>
+    
+    <div class="search-section">
+      <div class="search-bar">
+        <i class="fas fa-search"></i>
+        <input type="text" placeholder="搜索鱼塘编号或数据异常">
+      </div>
+      
+      <div class="filter-options">
+        <button class="filter-button" onclick="showFilterModal()">
+          <i class="fas fa-filter"></i>
+          筛选
+        </button>
+        <button class="filter-button">
+          <i class="fas fa-calendar-alt"></i>
+          日期范围
+        </button>
+        <button class="filter-button">
+          <i class="fas fa-sort"></i>
+          排序
+        </button>
+      </div>
+    </div>
+    
+    <div class="records-section">
+      <div class="records-header">
+        <div>
+          <div class="records-title">近期巡视记录</div>
+          <div class="records-count">共32条</div>
+        </div>
+        <button class="export-button">
+          <i class="fas fa-download"></i>
+          导出
+        </button>
+      </div>
+      
+      <div class="record-list">
+        <div class="record-date-header">今天</div>
+        
+        <div class="record-card">
+          <div class="record-header">
+            <div class="record-pond-id">YT-BJ-0001</div>
+            <div class="record-time">09:30</div>
+          </div>
+          <div class="record-content">
+            <div class="record-data">
+              <div class="record-data-item">
+                <div class="record-data-label">氧含量</div>
+                <div class="record-data-value abnormal">4.8 mg/L</div>
+              </div>
+              <div class="record-data-item">
+                <div class="record-data-label">温度</div>
+                <div class="record-data-value normal">22.5 °C</div>
+              </div>
+              <div class="record-data-item">
+                <div class="record-data-label">pH值</div>
+                <div class="record-data-value warning">8.3</div>
+              </div>
+            </div>
+            <div class="status-info">
+              <div class="status-indicator">
+                <span class="status-dot status-error"></span>
+                <span style="color: var(--error-color); font-size: 13px;">氧含量异常</span>
+              </div>
+            </div>
+          </div>
+          <div class="record-footer">
+            <div class="record-operator">
+              <i class="fas fa-user"></i>
+              <span>李管理</span>
+            </div>
+            <div class="record-actions">
+              <a href="#" class="record-action">详情</a>
+              <a href="#" class="record-action">分享</a>
+            </div>
+          </div>
+        </div>
+        
+        <div class="record-card">
+          <div class="record-header">
+            <div class="record-pond-id">YT-BJ-0003</div>
+            <div class="record-time">10:15</div>
+          </div>
+          <div class="record-content">
+            <div class="record-data">
+              <div class="record-data-item">
+                <div class="record-data-label">氧含量</div>
+                <div class="record-data-value normal">6.2 mg/L</div>
+              </div>
+              <div class="record-data-item">
+                <div class="record-data-label">温度</div>
+                <div class="record-data-value normal">23.1 °C</div>
+              </div>
+              <div class="record-data-item">
+                <div class="record-data-label">pH值</div>
+                <div class="record-data-value normal">7.2</div>
+              </div>
+            </div>
+            <div class="status-info">
+              <div class="status-indicator">
+                <span class="status-dot status-normal"></span>
+                <span style="color: var(--success-color); font-size: 13px;">所有指标正常</span>
+              </div>
+            </div>
+          </div>
+          <div class="record-footer">
+            <div class="record-operator">
+              <i class="fas fa-user"></i>
+              <span>李管理</span>
+            </div>
+            <div class="record-actions">
+              <a href="#" class="record-action">详情</a>
+              <a href="#" class="record-action">分享</a>
+            </div>
+          </div>
+        </div>
+        
+        <div class="record-date-header">昨天</div>
+        
+        <div class="record-card">
+          <div class="record-header">
+            <div class="record-pond-id">YT-BJ-0002</div>
+            <div class="record-time">15:45</div>
+          </div>
+          <div class="record-content">
+            <div class="record-data">
+              <div class="record-data-item">
+                <div class="record-data-label">氧含量</div>
+                <div class="record-data-value normal">6.5 mg/L</div>
+              </div>
+              <div class="record-data-item">
+                <div class="record-data-label">温度</div>
+                <div class="record-data-value warning">28.7 °C</div>
+              </div>
+              <div class="record-data-item">
+                <div class="record-data-label">pH值</div>
+                <div class="record-data-value normal">7.0</div>
+              </div>
+            </div>
+            <div class="status-info">
+              <div class="status-indicator">
+                <span class="status-dot status-warning"></span>
+                <span style="color: var(--warning-color); font-size: 13px;">温度偏高</span>
+              </div>
+            </div>
+          </div>
+          <div class="record-footer">
+            <div class="record-operator">
+              <i class="fas fa-user"></i>
+              <span>张技术</span>
+            </div>
+            <div class="record-actions">
+              <a href="#" class="record-action">详情</a>
+              <a href="#" class="record-action">分享</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="bottom-nav">
+      <a href="home.html" class="nav-item">
+        <i class="fas fa-home"></i>
+        <span>首页</span>
+      </a>
+      <a href="inspection.html" class="nav-item">
+        <i class="fas fa-clipboard-check"></i>
+        <span>巡视</span>
+      </a>
+      <a href="records.html" class="nav-item active">
+        <i class="fas fa-history"></i>
+        <span>记录</span>
+      </a>
+      <a href="profile.html" class="nav-item">
+        <i class="fas fa-user"></i>
+        <span>我的</span>
+      </a>
+    </div>
+  </div>
+  
+  <div class="filter-modal" id="filterModal">
+    <div class="filter-content">
+      <div class="filter-header">
+        <div class="filter-title">筛选条件</div>
+        <button class="filter-close" onclick="hideFilterModal()">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      
+      <div class="filter-section">
+        <div class="filter-section-title">时间范围</div>
+        <div class="filter-date-range">
+          <input type="date" class="datetime-picker" value="2023-10-01">
+          <input type="date" class="datetime-picker" value="2023-10-21">
+        </div>
+      </div>
+      
+      <div class="filter-section">
+        <div class="filter-section-title">鱼塘编号</div>
+        <input type="text" class="form-input" placeholder="输入鱼塘编号">
+      </div>
+      
+      <div class="filter-section">
+        <div class="filter-section-title">数据状态</div>
+        <div class="checkbox-list">
+          <label class="checkbox-item">
+            <input type="checkbox" checked> 正常
+          </label>
+          <label class="checkbox-item">
+            <input type="checkbox" checked> 警告
+          </label>
+          <label class="checkbox-item">
+            <input type="checkbox" checked> 异常
+          </label>
+        </div>
+      </div>
+      
+      <div class="filter-section">
+        <div class="filter-section-title">巡视人员</div>
+        <div class="checkbox-list">
+          <label class="checkbox-item">
+            <input type="checkbox" checked> 全部
+          </label>
+          <label class="checkbox-item">
+            <input type="checkbox"> 李管理
+          </label>
+          <label class="checkbox-item">
+            <input type="checkbox"> 张技术
+          </label>
+        </div>
+      </div>
+      
+      <div class="filter-actions">
+        <button class="filter-reset">重置</button>
+        <button class="filter-apply">应用</button>
+      </div>
+    </div>
+  </div>
+  
+  <script>
+    function showFilterModal() {
+      document.getElementById('filterModal').style.display = 'flex';
+    }
+    
+    function hideFilterModal() {
+      document.getElementById('filterModal').style.display = 'none';
+    }
+  </script>
+</body>
+</html> 

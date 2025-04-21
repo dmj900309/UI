@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>鱼塘巡视APP</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      background-color: #f0f0f0;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    }
+    
+    .page-header {
+      text-align: center;
+      margin: 20px 0;
+    }
+    
+    .page-header h1 {
+      color: #2196F3;
+      margin-bottom: 10px;
+    }
+    
+    .page-header p {
+      color: #666;
+    }
+    
+    .page-container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      padding: 20px;
+      gap: 20px;
+    }
+    
+    .phone-container {
+      position: relative;
+      width: 375px;
+      height: 812px;
+      background-color: #111;
+      border-radius: 40px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+      padding: 10px;
+      overflow: hidden;
+    }
+    
+    .phone-screen {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      background-color: #fff;
+      border-radius: 30px;
+      overflow: hidden;
+    }
+    
+    .dynamic-island {
+      position: absolute;
+      top: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 120px;
+      height: 25px;
+      background-color: #000;
+      border-radius: 20px;
+      z-index: 20;
+    }
+    
+    .iframe-container {
+      width: 100%;
+      height: 100%;
+    }
+    
+    iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+    
+    .page-title {
+      text-align: center;
+      margin: 10px 0;
+      font-size: 16px;
+      font-weight: 500;
+      color: #333;
+    }
+  </style>
+</head>
+<body>
+  <div class="page-header">
+    <h1>鱼塘巡视APP - 所有页面预览</h1>
+    <p>以下展示了应用的所有主要页面，每个预览按iPhone 15尺寸显示</p>
+  </div>
+
+  <div class="page-container">
+    <!-- 登录页面 -->
+    <div>
+      <div class="page-title">登录页面</div>
+      <div class="phone-container">
+        <div class="dynamic-island"></div>
+        <div class="phone-screen">
+          <div class="iframe-container">
+            <iframe src="pages/login.html" frameborder="0"></iframe>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- 首页 -->
+    <div>
+      <div class="page-title">首页</div>
+      <div class="phone-container">
+        <div class="dynamic-island"></div>
+        <div class="phone-screen">
+          <div class="iframe-container">
+            <iframe src="pages/home.html" frameborder="0"></iframe>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- 鱼塘录入页面 -->
+    <div>
+      <div class="page-title">鱼塘录入</div>
+      <div class="phone-container">
+        <div class="dynamic-island"></div>
+        <div class="phone-screen">
+          <div class="iframe-container">
+            <iframe src="pages/pond_register.html" frameborder="0"></iframe>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- 巡视路线规划页面 -->
+    <div>
+      <div class="page-title">巡视路线规划</div>
+      <div class="phone-container">
+        <div class="dynamic-island"></div>
+        <div class="phone-screen">
+          <div class="iframe-container">
+            <iframe src="pages/route_plan.html" frameborder="0"></iframe>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- 巡视执行页面 -->
+    <div>
+      <div class="page-title">巡视执行</div>
+      <div class="phone-container">
+        <div class="dynamic-island"></div>
+        <div class="phone-screen">
+          <div class="iframe-container">
+            <iframe src="pages/inspection.html" frameborder="0"></iframe>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- 巡视记录页面 -->
+    <div>
+      <div class="page-title">巡视记录</div>
+      <div class="phone-container">
+        <div class="dynamic-island"></div>
+        <div class="phone-screen">
+          <div class="iframe-container">
+            <iframe src="pages/records.html" frameborder="0"></iframe>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- 个人中心页面 -->
+    <div>
+      <div class="page-title">个人中心</div>
+      <div class="phone-container">
+        <div class="dynamic-island"></div>
+        <div class="phone-screen">
+          <div class="iframe-container">
+            <iframe src="pages/profile.html" frameborder="0"></iframe>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html> 

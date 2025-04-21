@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>鱼塘录入 - 鱼塘巡视APP</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="../css/common.css">
+  <style>
+    .app-container {
+      padding-bottom: 60px;
+    }
+    
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px;
+      background-color: var(--primary-color);
+      color: var(--white);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    
+    .map-container {
+      height: 200px;
+      background-color: #e9e9e9;
+      margin-bottom: 15px;
+      position: relative;
+    }
+    
+    .map-placeholder {
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      color: #666;
+    }
+    
+    .map-placeholder i {
+      font-size: 30px;
+      margin-bottom: 10px;
+    }
+    
+    .current-location {
+      position: absolute;
+      bottom: 10px;
+      right: 10px;
+      background-color: var(--white);
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+      color: var(--primary-color);
+      font-size: 18px;
+    }
+    
+    .tabs {
+      display: flex;
+      background-color: var(--white);
+      border-bottom: 1px solid var(--light-gray);
+      margin-bottom: 15px;
+    }
+    
+    .tab {
+      flex: 1;
+      text-align: center;
+      padding: 12px 0;
+      font-weight: 500;
+      color: #666;
+    }
+    
+    .tab.active {
+      color: var(--primary-color);
+      border-bottom: 2px solid var(--primary-color);
+    }
+    
+    .form-group.row {
+      display: flex;
+      align-items: center;
+    }
+    
+    .form-group.row .form-label {
+      width: 80px;
+    }
+    
+    .form-group.row .form-input {
+      flex: 1;
+    }
+    
+    .scan-button {
+      background-color: var(--primary-color);
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: var(--white);
+      margin-left: 10px;
+      border: none;
+      font-size: 18px;
+    }
+    
+    .coordinate-container {
+      display: flex;
+      gap: 10px;
+    }
+    
+    .coordinate-container .form-input {
+      flex: 1;
+    }
+    
+    .or-divider {
+      display: flex;
+      align-items: center;
+      margin: 20px 0;
+      color: #666;
+    }
+    
+    .or-divider:before,
+    .or-divider:after {
+      content: "";
+      flex: 1;
+      border-bottom: 1px solid var(--light-gray);
+    }
+    
+    .or-divider span {
+      padding: 0 10px;
+    }
+    
+    .pond-list {
+      margin-top: 20px;
+    }
+    
+    .pond-item {
+      background-color: var(--white);
+      border-radius: 10px;
+      box-shadow: var(--box-shadow);
+      padding: 15px;
+      margin-bottom: 10px;
+    }
+    
+    .pond-id {
+      font-weight: 600;
+      margin-bottom: 5px;
+    }
+    
+    .pond-location {
+      display: flex;
+      align-items: center;
+      font-size: 14px;
+      color: #666;
+    }
+    
+    .pond-location i {
+      margin-right: 5px;
+    }
+  </style>
+</head>
+<body>
+  <div class="app-container">
+    <div class="header">
+      <button class="back-button" onclick="history.back()">
+        <i class="fas fa-arrow-left"></i>
+      </button>
+      <h1>鱼塘录入</h1>
+      <div style="width: 24px;"></div>
+    </div>
+    
+    <div class="tabs">
+      <div class="tab active">录入鱼塘</div>
+      <div class="tab">已录入列表</div>
+    </div>
+    
+    <div class="content">
+      <div class="map-container">
+        <div class="map-placeholder">
+          <i class="fas fa-map-marker-alt"></i>
+          <p>点击选择位置</p>
+        </div>
+        <button class="current-location">
+          <i class="fas fa-crosshairs"></i>
+        </button>
+      </div>
+      
+      <div class="input-section">
+        <div class="form-group row">
+          <label class="form-label" for="pond-id">鱼塘编号</label>
+          <input type="text" id="pond-id" class="form-input" placeholder="YT-区域代码-4位数字">
+          <button class="scan-button">
+            <i class="fas fa-qrcode"></i>
+          </button>
+        </div>
+        
+        <div class="form-group">
+          <label class="form-label" for="area-code">区域代码</label>
+          <select id="area-code" class="select-input">
+            <option value="">请选择区域</option>
+            <option value="BJ">北京 (BJ)</option>
+            <option value="SH">上海 (SH)</option>
+            <option value="GZ">广州 (GZ)</option>
+            <option value="SZ">深圳 (SZ)</option>
+          </select>
+        </div>
+        
+        <div class="or-divider">
+          <span>或手动输入坐标</span>
+        </div>
+        
+        <div class="coordinate-container">
+          <div class="form-group">
+            <label class="form-label" for="longitude">经度</label>
+            <input type="number" id="longitude" class="form-input" placeholder="116.xxx">
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="latitude">纬度</label>
+            <input type="number" id="latitude" class="form-input" placeholder="39.xxx">
+          </div>
+        </div>
+        
+        <div class="form-group">
+          <label class="form-label" for="notes">备注信息</label>
+          <textarea id="notes" class="form-input" rows="3" placeholder="可选填写备注信息"></textarea>
+        </div>
+        
+        <button class="button">确认录入</button>
+      </div>
+      
+      <div class="pond-list" style="display: none;">
+        <div class="pond-item">
+          <div class="pond-id">YT-BJ-0001</div>
+          <div class="pond-location">
+            <i class="fas fa-map-marker-alt"></i>
+            <span>116.4074, 39.9042</span>
+          </div>
+        </div>
+        <div class="pond-item">
+          <div class="pond-id">YT-BJ-0002</div>
+          <div class="pond-location">
+            <i class="fas fa-map-marker-alt"></i>
+            <span>116.4133, 39.9110</span>
+          </div>
+        </div>
+        <div class="pond-item">
+          <div class="pond-id">YT-SH-0001</div>
+          <div class="pond-location">
+            <i class="fas fa-map-marker-alt"></i>
+            <span>121.4737, 31.2304</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="bottom-nav">
+      <a href="home.html" class="nav-item">
+        <i class="fas fa-home"></i>
+        <span>首页</span>
+      </a>
+      <a href="inspection.html" class="nav-item">
+        <i class="fas fa-clipboard-check"></i>
+        <span>巡视</span>
+      </a>
+      <a href="records.html" class="nav-item">
+        <i class="fas fa-history"></i>
+        <span>记录</span>
+      </a>
+      <a href="profile.html" class="nav-item">
+        <i class="fas fa-user"></i>
+        <span>我的</span>
+      </a>
+    </div>
+  </div>
+  
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const tabs = document.querySelectorAll('.tab');
+      const inputSection = document.querySelector('.input-section');
+      const pondList = document.querySelector('.pond-list');
+      
+      tabs.forEach((tab, index) => {
+        tab.addEventListener('click', () => {
+          tabs.forEach(t => t.classList.remove('active'));
+          tab.classList.add('active');
+          
+          if (index === 0) {
+            inputSection.style.display = 'block';
+            pondList.style.display = 'none';
+          } else {
+            inputSection.style.display = 'none';
+            pondList.style.display = 'block';
+          }
+        });
+      });
+    });
+  </script>
+</body>
+</html> 

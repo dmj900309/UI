@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>首页 - 鱼塘巡视APP</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="../css/common.css">
+  <style>
+    .app-container {
+      padding-bottom: 60px;
+    }
+    
+    .header {
+      padding: 20px 15px;
+      background-color: var(--primary-color);
+      color: var(--white);
+    }
+    
+    .header-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 15px;
+    }
+    
+    .user-info {
+      display: flex;
+      align-items: center;
+    }
+    
+    .avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background-color: var(--secondary-color);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-right: 10px;
+      color: var(--white);
+      font-size: 20px;
+    }
+    
+    .notification {
+      position: relative;
+      font-size: 22px;
+    }
+    
+    .notification .badge {
+      position: absolute;
+      top: -5px;
+      right: -5px;
+      width: 16px;
+      height: 16px;
+      background-color: var(--error-color);
+      border-radius: 50%;
+      font-size: 10px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    
+    .welcome-text h1 {
+      font-size: 20px;
+      margin-bottom: 5px;
+    }
+    
+    .welcome-text p {
+      font-size: 14px;
+      opacity: 0.8;
+    }
+    
+    .search-bar {
+      display: flex;
+      align-items: center;
+      background-color: rgba(255, 255, 255, 0.2);
+      border-radius: 8px;
+      padding: 10px 15px;
+    }
+    
+    .search-bar i {
+      margin-right: 10px;
+    }
+    
+    .search-bar input {
+      flex: 1;
+      background: none;
+      border: none;
+      color: var(--white);
+      outline: none;
+    }
+    
+    .search-bar input::placeholder {
+      color: rgba(255, 255, 255, 0.7);
+    }
+    
+    .stat-cards {
+      display: flex;
+      gap: 15px;
+      padding: 0 15px;
+      margin-top: -20px;
+    }
+    
+    .stat-card {
+      flex: 1;
+      background-color: var(--white);
+      border-radius: 10px;
+      padding: 15px;
+      box-shadow: var(--box-shadow);
+      text-align: center;
+    }
+    
+    .stat-card .value {
+      font-size: 24px;
+      font-weight: 600;
+      margin: 5px 0;
+      color: var(--primary-color);
+    }
+    
+    .stat-card .label {
+      font-size: 12px;
+      color: #666;
+    }
+    
+    .quick-actions {
+      padding: 15px;
+    }
+    
+    .section-title {
+      font-size: 18px;
+      margin-bottom: 15px;
+      font-weight: 600;
+    }
+    
+    .action-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 15px;
+    }
+    
+    .action-item {
+      background-color: var(--white);
+      border-radius: 10px;
+      padding: 20px 15px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      box-shadow: var(--box-shadow);
+      text-decoration: none;
+      color: var(--text-color);
+    }
+    
+    .action-item i {
+      font-size: 30px;
+      color: var(--primary-color);
+      margin-bottom: 10px;
+    }
+    
+    .action-item .action-title {
+      font-weight: 500;
+      margin-bottom: 5px;
+    }
+    
+    .action-item .action-subtitle {
+      font-size: 12px;
+      color: #666;
+      text-align: center;
+    }
+    
+    .recent-activities {
+      padding: 15px;
+    }
+    
+    .activity-list {
+      background-color: var(--white);
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: var(--box-shadow);
+    }
+    
+    .activity-item {
+      display: flex;
+      align-items: center;
+      padding: 15px;
+      border-bottom: 1px solid var(--light-gray);
+    }
+    
+    .activity-item:last-child {
+      border-bottom: none;
+    }
+    
+    .activity-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background-color: rgba(33, 150, 243, 0.1);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-right: 15px;
+      color: var(--primary-color);
+    }
+    
+    .activity-info {
+      flex: 1;
+    }
+    
+    .activity-title {
+      font-weight: 500;
+      margin-bottom: 5px;
+    }
+    
+    .activity-time {
+      font-size: 12px;
+      color: #666;
+    }
+  </style>
+</head>
+<body>
+  <div class="app-container">
+    <div class="header">
+      <div class="header-top">
+        <div class="user-info">
+          <div class="avatar">
+            <i class="fas fa-user"></i>
+          </div>
+          <div class="welcome-text">
+            <h1>你好，李管理</h1>
+            <p>鱼塘所有人</p>
+          </div>
+        </div>
+        <div class="notification">
+          <i class="fas fa-bell"></i>
+          <span class="badge">3</span>
+        </div>
+      </div>
+      <div class="search-bar">
+        <i class="fas fa-search"></i>
+        <input type="text" placeholder="搜索鱼塘或巡视记录">
+      </div>
+    </div>
+    
+    <div class="stat-cards">
+      <div class="stat-card">
+        <div class="value">12</div>
+        <div class="label">鱼塘数量</div>
+      </div>
+      <div class="stat-card">
+        <div class="value">6</div>
+        <div class="label">今日巡视</div>
+      </div>
+      <div class="stat-card">
+        <div class="value">2</div>
+        <div class="label">异常事件</div>
+      </div>
+    </div>
+    
+    <div class="quick-actions">
+      <h2 class="section-title">快捷功能</h2>
+      <div class="action-grid">
+        <a href="pond_register.html" class="action-item">
+          <i class="fas fa-plus-circle"></i>
+          <div class="action-title">鱼塘录入</div>
+          <div class="action-subtitle">添加新的鱼塘信息</div>
+        </a>
+        <a href="route_plan.html" class="action-item">
+          <i class="fas fa-route"></i>
+          <div class="action-title">巡视规划</div>
+          <div class="action-subtitle">规划巡视线路和时间</div>
+        </a>
+        <a href="inspection.html" class="action-item">
+          <i class="fas fa-clipboard-check"></i>
+          <div class="action-title">开始巡视</div>
+          <div class="action-subtitle">执行巡视任务采集数据</div>
+        </a>
+        <a href="records.html" class="action-item">
+          <i class="fas fa-history"></i>
+          <div class="action-title">巡视记录</div>
+          <div class="action-subtitle">查看历史巡视数据</div>
+        </a>
+      </div>
+    </div>
+    
+    <div class="recent-activities">
+      <h2 class="section-title">最近活动</h2>
+      <div class="activity-list">
+        <div class="activity-item">
+          <div class="activity-icon">
+            <i class="fas fa-check-circle"></i>
+          </div>
+          <div class="activity-info">
+            <div class="activity-title">完成东区鱼塘巡视</div>
+            <div class="activity-time">今天 09:30</div>
+          </div>
+        </div>
+        <div class="activity-item">
+          <div class="activity-icon">
+            <i class="fas fa-exclamation-triangle"></i>
+          </div>
+          <div class="activity-info">
+            <div class="activity-title">YT-BJ-0003 氧含量偏低</div>
+            <div class="activity-time">今天 08:15</div>
+          </div>
+        </div>
+        <div class="activity-item">
+          <div class="activity-icon">
+            <i class="fas fa-route"></i>
+          </div>
+          <div class="activity-info">
+            <div class="activity-title">规划了西区巡视路线</div>
+            <div class="activity-time">昨天 16:45</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="bottom-nav">
+      <a href="home.html" class="nav-item active">
+        <i class="fas fa-home"></i>
+        <span>首页</span>
+      </a>
+      <a href="inspection.html" class="nav-item">
+        <i class="fas fa-clipboard-check"></i>
+        <span>巡视</span>
+      </a>
+      <a href="records.html" class="nav-item">
+        <i class="fas fa-history"></i>
+        <span>记录</span>
+      </a>
+      <a href="profile.html" class="nav-item">
+        <i class="fas fa-user"></i>
+        <span>我的</span>
+      </a>
+    </div>
+  </div>
+</body>
+</html> 
