@@ -3,17 +3,21 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>巡视记录 - 鱼塘巡视APP</title>
+  <title>巡视记录 - 水质巡检</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="stylesheet" href="../css/common.css">
   <style>
     .app-container {
       padding-bottom: 60px;
+      background-color: #f5f7fa;
     }
     
     .search-section {
       background-color: var(--primary-color);
       padding: 15px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
     }
     
     .search-bar {
@@ -63,7 +67,6 @@
     }
     
     .records-section {
-      background-color: var(--white);
       padding: 15px;
     }
     
@@ -76,11 +79,13 @@
     
     .records-title {
       font-weight: 600;
+      font-size: 18px;
     }
     
     .records-count {
       color: #666;
       font-size: 14px;
+      margin-top: 4px;
     }
     
     .export-button {
@@ -90,6 +95,9 @@
       background: none;
       border: none;
       font-size: 14px;
+      padding: 8px 12px;
+      border-radius: 6px;
+      background-color: rgba(33, 150, 243, 0.1);
     }
     
     .export-button i {
@@ -101,210 +109,245 @@
     }
     
     .record-date-header {
-      background-color: #f5f5f5;
-      padding: 8px 10px;
+      display: flex;
+      align-items: center;
+      margin: 20px 0 15px;
+      color: #666;
       font-size: 14px;
-      font-weight: 500;
-      border-radius: 5px;
-      margin-bottom: 10px;
+    }
+    
+    .record-date-header::before {
+      content: '';
+      width: 4px;
+      height: 16px;
+      background-color: var(--primary-color);
+      margin-right: 8px;
+      border-radius: 2px;
     }
     
     .record-card {
       background-color: var(--white);
-      border-radius: 8px;
-      border: 1px solid var(--light-gray);
-      margin-bottom: 10px;
+      border-radius: 12px;
+      margin-bottom: 15px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
       overflow: hidden;
     }
     
     .record-header {
+      padding: 15px;
+      border-bottom: 1px solid #f0f0f0;
       display: flex;
       justify-content: space-between;
-      padding: 10px 15px;
-      border-bottom: 1px solid #f5f5f5;
+      align-items: center;
+    }
+    
+    .record-pond-info {
+      display: flex;
+      flex-direction: column;
     }
     
     .record-pond-id {
       font-weight: 600;
+      font-size: 16px;
+      color: #333;
+    }
+    
+    .record-location {
+      font-size: 12px;
+      color: #666;
+      margin-top: 4px;
+    }
+    
+    .record-time-group {
+      text-align: right;
     }
     
     .record-time {
-      color: #666;
-      font-size: 14px;
+      font-size: 15px;
+      font-weight: 500;
+      color: #333;
+    }
+    
+    .record-time-status {
+      font-size: 12px;
+      margin-top: 4px;
+      padding: 2px 8px;
+      border-radius: 10px;
+      display: inline-block;
+    }
+    
+    .record-time-status.overtime {
+      background-color: #fff3e0;
+      color: #e65100;
+    }
+    
+    .record-time-status.early {
+      background-color: #e8f5e9;
+      color: #2e7d32;
     }
     
     .record-content {
       padding: 15px;
     }
     
-    .record-data {
-      display: flex;
-      justify-content: space-between;
-      text-align: center;
-      margin-bottom: 10px;
+    .record-data-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 15px;
+      margin-bottom: 15px;
     }
     
     .record-data-item {
-      flex: 1;
+      background-color: #f8f9fa;
+      border-radius: 8px;
+      padding: 12px;
+      text-align: center;
     }
     
     .record-data-label {
       font-size: 12px;
       color: #666;
-      margin-bottom: 5px;
+      margin-bottom: 8px;
     }
     
     .record-data-value {
-      font-size: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      font-size: 22px;
       font-weight: 600;
+      color: #d32f2f;
+      line-height: 1;
     }
     
     .record-data-value.normal {
-      color: var(--success-color);
+      color: #2e7d32;
     }
     
     .record-data-value.warning {
-      color: var(--warning-color);
+      color: #f57c00;
     }
     
     .record-data-value.abnormal {
-      color: var(--error-color);
+      color: #d32f2f;
+    }
+    
+    .record-data-unit {
+      font-size: 15px;
+      font-weight: 400;
+      margin-left: 2px;
+      color: inherit;
+    }
+    
+    .status-icon {
+      font-size: 18px;
+      margin-left: 2px;
+      vertical-align: middle;
+    }
+    
+    .status-indicator {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 12px;
+      padding: 2px 6px;
+      border-radius: 10px;
+      margin-left: 4px;
+    }
+    
+    .status-indicator.normal {
+      background-color: #e8f5e9;
+      color: #2e7d32;
+    }
+    
+    .status-indicator.warning {
+      background-color: #fff3e0;
+      color: #f57c00;
+    }
+    
+    .status-indicator.abnormal {
+      background-color: #ffebee;
+      color: #d32f2f;
     }
     
     .record-footer {
+      padding: 12px 15px;
+      background-color: #f8f9fa;
       display: flex;
       justify-content: space-between;
-      padding: 10px 15px;
-      background-color: #f9f9f9;
-      font-size: 13px;
+      align-items: center;
     }
     
     .record-operator {
       display: flex;
       align-items: center;
+      gap: 8px;
     }
     
-    .record-operator i {
-      margin-right: 5px;
+    .operator-avatar {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background-color: var(--primary-color);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+    }
+    
+    .operator-name {
+      font-size: 13px;
       color: #666;
     }
     
     .record-actions {
       display: flex;
+      gap: 15px;
     }
     
     .record-action {
       color: var(--primary-color);
-      margin-left: 15px;
-    }
-    
-    .filter-modal {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background-color: rgba(0, 0, 0, 0.5);
-      display: none;
-      justify-content: center;
-      align-items: flex-end;
-      z-index: 1000;
-    }
-    
-    .filter-content {
-      background-color: var(--white);
-      width: 100%;
-      border-top-left-radius: 15px;
-      border-top-right-radius: 15px;
-      padding: 20px;
-    }
-    
-    .filter-header {
+      font-size: 13px;
+      text-decoration: none;
       display: flex;
-      justify-content: space-between;
       align-items: center;
-      margin-bottom: 20px;
+      gap: 4px;
     }
     
-    .filter-title {
-      font-weight: 600;
+    .record-action i {
+      font-size: 14px;
+    }
+    
+    .abnormal-alert {
+      background-color: #fff3e0;
+      border-radius: 8px;
+      padding: 12px 15px;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    .abnormal-alert i {
+      color: #e65100;
       font-size: 18px;
     }
     
-    .filter-close {
-      border: none;
-      background: none;
-      font-size: 20px;
-      color: #666;
+    .abnormal-alert-text {
+      color: #e65100;
+      font-size: 14px;
+      flex: 1;
     }
     
-    .filter-section {
-      margin-bottom: 20px;
-    }
-    
-    .filter-section-title {
-      font-weight: 500;
-      margin-bottom: 10px;
-    }
-    
-    .filter-date-range {
-      display: flex;
-      gap: 10px;
-    }
-    
-    .checkbox-list {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      margin-bottom: 15px;
-    }
-    
-    .checkbox-item {
+    .abnormal-alert-action {
+      color: #e65100;
+      font-size: 13px;
+      text-decoration: none;
       display: flex;
       align-items: center;
-    }
-    
-    .checkbox-item input {
-      margin-right: 5px;
-    }
-    
-    .filter-actions {
-      display: flex;
-      gap: 10px;
-    }
-    
-    .filter-actions button {
-      flex: 1;
-      padding: 12px;
-      border-radius: 8px;
-      font-weight: 500;
-      border: none;
-    }
-    
-    .filter-reset {
-      background-color: #f5f5f5;
-      color: #333;
-    }
-    
-    .filter-apply {
-      background-color: var(--primary-color);
-      color: var(--white);
-    }
-    
-    .empty-records {
-      text-align: center;
-      padding: 40px 20px;
-      color: #666;
-    }
-    
-    .empty-records i {
-      font-size: 60px;
-      color: #ddd;
-      margin-bottom: 15px;
-    }
-    
-    .empty-records p {
-      margin-bottom: 20px;
+      gap: 4px;
     }
   </style>
 </head>
@@ -321,7 +364,7 @@
     <div class="search-section">
       <div class="search-bar">
         <i class="fas fa-search"></i>
-        <input type="text" placeholder="搜索鱼塘编号或数据异常">
+        <input type="text" placeholder="搜索鱼池编号或数据异常">
       </div>
       
       <div class="filter-options">
@@ -343,8 +386,8 @@
     <div class="records-section">
       <div class="records-header">
         <div>
-          <div class="records-title">近期巡视记录</div>
-          <div class="records-count">共32条</div>
+          <div class="records-title">巡视记录</div>
+          <div class="records-count">共32条记录</div>
         </div>
         <button class="export-button">
           <i class="fas fa-download"></i>
@@ -352,83 +395,102 @@
         </button>
       </div>
       
+      <div class="abnormal-alert">
+        <i class="fas fa-exclamation-triangle"></i>
+        <div class="abnormal-alert-text">以下鱼池存在未按时巡检异常：YT-BJ-0005、YT-BJ-0008</div>
+        <a href="#" class="abnormal-alert-action">
+          查看详情
+          <i class="fas fa-chevron-right"></i>
+        </a>
+      </div>
+      
       <div class="record-list">
         <div class="record-date-header">今天</div>
         
         <div class="record-card">
           <div class="record-header">
-            <div class="record-pond-id">YT-BJ-0001</div>
-            <div class="record-time">09:30</div>
+            <div class="record-pond-info">
+              <div class="record-pond-id">YT-BJ-0001</div>
+              <div class="record-location">北京朝阳区</div>
+            </div>
+            <div class="record-time-group">
+              <div class="record-time">09:30</div>
+              <div class="record-time-status overtime">
+                <i class="fas fa-exclamation-circle"></i>
+                超时 15 分钟
+              </div>
+            </div>
           </div>
           <div class="record-content">
-            <div class="record-data">
+            <div class="record-data-grid">
               <div class="record-data-item">
                 <div class="record-data-label">氧含量</div>
-                <div class="record-data-value abnormal">4.8 mg/L</div>
+                <div class="record-data-value abnormal">
+                  4.8
+                  <span class="record-data-unit">mg/L</span>
+                  <i class="fas fa-exclamation-circle status-icon"></i>
+                </div>
               </div>
               <div class="record-data-item">
                 <div class="record-data-label">温度</div>
-                <div class="record-data-value normal">22.5 °C</div>
+                <div class="record-data-value normal">
+                  22.5
+                  <span class="record-data-unit">°C</span>
+                  <i class="fas fa-check-circle status-icon"></i>
+                </div>
               </div>
               <div class="record-data-item">
                 <div class="record-data-label">pH值</div>
-                <div class="record-data-value warning">8.3</div>
+                <div class="record-data-value warning">
+                  8.3
+                  <span class="record-data-unit"></span>
+                  <i class="fas fa-exclamation-circle status-icon"></i>
+                </div>
               </div>
-            </div>
-            <div class="status-info">
-              <div class="status-indicator">
-                <span class="status-dot status-error"></span>
-                <span style="color: var(--error-color); font-size: 13px;">氧含量异常</span>
-              </div>
-            </div>
-          </div>
-          <div class="record-footer">
-            <div class="record-operator">
-              <i class="fas fa-user"></i>
-              <span>李管理</span>
-            </div>
-            <div class="record-actions">
-              <a href="#" class="record-action">详情</a>
-              <a href="#" class="record-action">分享</a>
             </div>
           </div>
         </div>
         
         <div class="record-card">
           <div class="record-header">
-            <div class="record-pond-id">YT-BJ-0003</div>
-            <div class="record-time">10:15</div>
+            <div class="record-pond-info">
+              <div class="record-pond-id">YT-BJ-0003</div>
+              <div class="record-location">北京海淀区</div>
+            </div>
+            <div class="record-time-group">
+              <div class="record-time">10:15</div>
+              <div class="record-time-status normal">
+                <i class="fas fa-check-circle"></i>
+                准时
+              </div>
+            </div>
           </div>
           <div class="record-content">
-            <div class="record-data">
+            <div class="record-data-grid">
               <div class="record-data-item">
                 <div class="record-data-label">氧含量</div>
-                <div class="record-data-value normal">6.2 mg/L</div>
+                <div class="record-data-value normal">
+                  6.2
+                  <span class="record-data-unit">mg/L</span>
+                  <i class="fas fa-check-circle status-icon"></i>
+                </div>
               </div>
               <div class="record-data-item">
                 <div class="record-data-label">温度</div>
-                <div class="record-data-value normal">23.1 °C</div>
+                <div class="record-data-value normal">
+                  23.1
+                  <span class="record-data-unit">°C</span>
+                  <i class="fas fa-check-circle status-icon"></i>
+                </div>
               </div>
               <div class="record-data-item">
                 <div class="record-data-label">pH值</div>
-                <div class="record-data-value normal">7.2</div>
+                <div class="record-data-value normal">
+                  7.2
+                  <span class="record-data-unit"></span>
+                  <i class="fas fa-check-circle status-icon"></i>
+                </div>
               </div>
-            </div>
-            <div class="status-info">
-              <div class="status-indicator">
-                <span class="status-dot status-normal"></span>
-                <span style="color: var(--success-color); font-size: 13px;">所有指标正常</span>
-              </div>
-            </div>
-          </div>
-          <div class="record-footer">
-            <div class="record-operator">
-              <i class="fas fa-user"></i>
-              <span>李管理</span>
-            </div>
-            <div class="record-actions">
-              <a href="#" class="record-action">详情</a>
-              <a href="#" class="record-action">分享</a>
             </div>
           </div>
         </div>
@@ -437,39 +499,44 @@
         
         <div class="record-card">
           <div class="record-header">
-            <div class="record-pond-id">YT-BJ-0002</div>
-            <div class="record-time">15:45</div>
+            <div class="record-pond-info">
+              <div class="record-pond-id">YT-BJ-0002</div>
+              <div class="record-location">北京丰台区</div>
+            </div>
+            <div class="record-time-group">
+              <div class="record-time">15:45</div>
+              <div class="record-time-status early">
+                <i class="fas fa-clock"></i>
+                提前 10 分钟
+              </div>
+            </div>
           </div>
           <div class="record-content">
-            <div class="record-data">
+            <div class="record-data-grid">
               <div class="record-data-item">
                 <div class="record-data-label">氧含量</div>
-                <div class="record-data-value normal">6.5 mg/L</div>
+                <div class="record-data-value normal">
+                  6.5
+                  <span class="record-data-unit">mg/L</span>
+                  <i class="fas fa-check-circle status-icon"></i>
+                </div>
               </div>
               <div class="record-data-item">
                 <div class="record-data-label">温度</div>
-                <div class="record-data-value warning">28.7 °C</div>
+                <div class="record-data-value warning">
+                  28.7
+                  <span class="record-data-unit">°C</span>
+                  <i class="fas fa-exclamation-circle status-icon"></i>
+                </div>
               </div>
               <div class="record-data-item">
                 <div class="record-data-label">pH值</div>
-                <div class="record-data-value normal">7.0</div>
+                <div class="record-data-value normal">
+                  7.0
+                  <span class="record-data-unit"></span>
+                  <i class="fas fa-check-circle status-icon"></i>
+                </div>
               </div>
-            </div>
-            <div class="status-info">
-              <div class="status-indicator">
-                <span class="status-dot status-warning"></span>
-                <span style="color: var(--warning-color); font-size: 13px;">温度偏高</span>
-              </div>
-            </div>
-          </div>
-          <div class="record-footer">
-            <div class="record-operator">
-              <i class="fas fa-user"></i>
-              <span>张技术</span>
-            </div>
-            <div class="record-actions">
-              <a href="#" class="record-action">详情</a>
-              <a href="#" class="record-action">分享</a>
             </div>
           </div>
         </div>
@@ -495,74 +562,5 @@
       </a>
     </div>
   </div>
-  
-  <div class="filter-modal" id="filterModal">
-    <div class="filter-content">
-      <div class="filter-header">
-        <div class="filter-title">筛选条件</div>
-        <button class="filter-close" onclick="hideFilterModal()">
-          <i class="fas fa-times"></i>
-        </button>
-      </div>
-      
-      <div class="filter-section">
-        <div class="filter-section-title">时间范围</div>
-        <div class="filter-date-range">
-          <input type="date" class="datetime-picker" value="2023-10-01">
-          <input type="date" class="datetime-picker" value="2023-10-21">
-        </div>
-      </div>
-      
-      <div class="filter-section">
-        <div class="filter-section-title">鱼塘编号</div>
-        <input type="text" class="form-input" placeholder="输入鱼塘编号">
-      </div>
-      
-      <div class="filter-section">
-        <div class="filter-section-title">数据状态</div>
-        <div class="checkbox-list">
-          <label class="checkbox-item">
-            <input type="checkbox" checked> 正常
-          </label>
-          <label class="checkbox-item">
-            <input type="checkbox" checked> 警告
-          </label>
-          <label class="checkbox-item">
-            <input type="checkbox" checked> 异常
-          </label>
-        </div>
-      </div>
-      
-      <div class="filter-section">
-        <div class="filter-section-title">巡视人员</div>
-        <div class="checkbox-list">
-          <label class="checkbox-item">
-            <input type="checkbox" checked> 全部
-          </label>
-          <label class="checkbox-item">
-            <input type="checkbox"> 李管理
-          </label>
-          <label class="checkbox-item">
-            <input type="checkbox"> 张技术
-          </label>
-        </div>
-      </div>
-      
-      <div class="filter-actions">
-        <button class="filter-reset">重置</button>
-        <button class="filter-apply">应用</button>
-      </div>
-    </div>
-  </div>
-  
-  <script>
-    function showFilterModal() {
-      document.getElementById('filterModal').style.display = 'flex';
-    }
-    
-    function hideFilterModal() {
-      document.getElementById('filterModal').style.display = 'none';
-    }
-  </script>
 </body>
 </html> 

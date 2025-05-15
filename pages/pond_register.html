@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>鱼塘录入 - 鱼塘巡视APP</title>
+  <title>水质点位录入 - 水质巡检</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="stylesheet" href="../css/common.css">
   <style>
@@ -108,30 +108,11 @@
     }
     
     .coordinate-container {
-      display: flex;
-      gap: 10px;
-    }
-    
-    .coordinate-container .form-input {
-      flex: 1;
+      display: none;
     }
     
     .or-divider {
-      display: flex;
-      align-items: center;
-      margin: 20px 0;
-      color: #666;
-    }
-    
-    .or-divider:before,
-    .or-divider:after {
-      content: "";
-      flex: 1;
-      border-bottom: 1px solid var(--light-gray);
-    }
-    
-    .or-divider span {
-      padding: 0 10px;
+      display: none;
     }
     
     .pond-list {
@@ -169,12 +150,12 @@
       <button class="back-button" onclick="history.back()">
         <i class="fas fa-arrow-left"></i>
       </button>
-      <h1>鱼塘录入</h1>
+      <h1>水质点位录入</h1>
       <div style="width: 24px;"></div>
     </div>
     
     <div class="tabs">
-      <div class="tab active">录入鱼塘</div>
+      <div class="tab active">录入点位</div>
       <div class="tab">已录入列表</div>
     </div>
     
@@ -191,10 +172,18 @@
       
       <div class="input-section">
         <div class="form-group row">
-          <label class="form-label" for="pond-id">鱼塘编号</label>
-          <input type="text" id="pond-id" class="form-input" placeholder="YT-区域代码-4位数字">
+          <label class="form-label" for="pond-id">点位编号</label>
+          <input type="text" id="pond-id" class="form-input" placeholder="SZ-区域代码-4位数字">
           <button class="scan-button">
             <i class="fas fa-qrcode"></i>
+          </button>
+        </div>
+        
+        <div class="form-group row">
+          <label class="form-label" for="tag-id">电子标签</label>
+          <input type="text" id="tag-id" class="form-input" placeholder="输入电子标签序列号">
+          <button class="scan-button">
+            <i class="fas fa-barcode"></i>
           </button>
         </div>
         
@@ -207,21 +196,6 @@
             <option value="GZ">广州 (GZ)</option>
             <option value="SZ">深圳 (SZ)</option>
           </select>
-        </div>
-        
-        <div class="or-divider">
-          <span>或手动输入坐标</span>
-        </div>
-        
-        <div class="coordinate-container">
-          <div class="form-group">
-            <label class="form-label" for="longitude">经度</label>
-            <input type="number" id="longitude" class="form-input" placeholder="116.xxx">
-          </div>
-          <div class="form-group">
-            <label class="form-label" for="latitude">纬度</label>
-            <input type="number" id="latitude" class="form-input" placeholder="39.xxx">
-          </div>
         </div>
         
         <div class="form-group">
